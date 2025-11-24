@@ -92,6 +92,8 @@ router.post('/', authenticate, async (req, res) => {
 
     // Get menu items and calculate prices
     const orderItems = [];
+    let totalAmount = 0;
+    
     for (const item of items) {
       const menuItem = await MenuItem.findById(item.menuItemId);
       if (!menuItem) {
@@ -100,6 +102,9 @@ router.post('/', authenticate, async (req, res) => {
       if (!menuItem.isAvailable) {
         return res.status(400).json({ error: `${menuItem.name} is not available` });
       }
+
+      const itemTotal = menuItem.price * item.qty;
+      totalAmount += itemTotal;
 
       orderItems.push({
         menuItemId: menuItem._id,
@@ -112,6 +117,7 @@ router.post('/', authenticate, async (req, res) => {
     const order = new Order({
       bookingId,
       items: orderItems,
+      total: totalAmount,
       deliveryLocation: deliveryLocation || 'Room',
       specialInstructions
     });

@@ -23,7 +23,7 @@ class AuthService {
 
   // Register new user
   async register(userData) {
-    const { name, email, passwordHash, phone, role } = userData;
+    const { name, email, password, phone, role } = userData;
 
     // Check if user exists
     const existingUser = await User.findOne({ email });
@@ -35,7 +35,7 @@ class AuthService {
     const user = new User({
       name,
       email,
-      passwordHash, // Will be hashed by pre-save hook
+      passwordHash: password, // Map password to passwordHash - will be hashed by pre-save hook
       phone,
       role: role || 'guest'
     });
@@ -118,4 +118,3 @@ class AuthService {
 }
 
 module.exports = new AuthService();
-

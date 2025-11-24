@@ -2,6 +2,13 @@ const Booking = require('../models/Booking');
 const { Room, RoomType } = require('../models/Room');
 
 class BookingService {
+  // Generate unique confirmation code
+  generateConfirmationCode() {
+    const timestamp = Date.now().toString(36).toUpperCase();
+    const random = Math.random().toString(36).substring(2, 8).toUpperCase();
+    return `BK${timestamp}${random}`;
+  }
+
   // Check room availability
   async checkAvailability(checkIn, checkOut, guests) {
     // Get all room types that can accommodate guests
@@ -93,18 +100,22 @@ class BookingService {
     // Calculate price
     const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
     const basePrice = roomType.basePrice * nights;
-    const extrasTotal = extras.reduce((sum, extra) => sum + extra.price, 0);
+    const extrasTotal = extras?.reduce((sum, extra) => sum + extra.price, 0) || 0;
     const totalAmount = basePrice + extrasTotal;
+
+    // Generate confirmation code
+    const confirmationCode = this.generateConfirmationCode();
 
     // Create booking
     const booking = new Booking({
       userId,
       roomTypeId,
+      confirmationCode,
       checkIn,
       checkOut,
       guests,
       basePrice,
-      extras,
+      extras: extras || [],
       totalAmount,
       reservationHoldExpiry: new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
     });
@@ -117,4 +128,3 @@ class BookingService {
 }
 
 module.exports = new BookingService();
-
