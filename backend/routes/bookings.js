@@ -233,6 +233,26 @@ router.patch('/:id/cancel', authenticate, async (req, res) => {
     }
 
     booking.status = 'cancelled';
+    // Create transaction record
+const Transaction = require('../models/Transaction');
+
+const transaction = new Transaction({
+  userId,
+  bookingId: booking._id,
+  type: 'booking',
+  description: `Booking for ${roomType.name} - ${nights} night(s)`,
+  amount: totalAmount,
+  status: 'completed',
+  details: {
+    checkIn,
+    checkOut,
+    nights,
+    roomType: roomType.name,
+    guests
+  }
+});
+
+await transaction.save();
     
     // Free up room if assigned
     if (booking.roomId) {

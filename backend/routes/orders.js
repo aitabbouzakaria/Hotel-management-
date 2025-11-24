@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { Order, MenuItem } = require('../models/Order');
 const Booking = require('../models/Booking');
+const Transaction = require('../models/Transaction');
 const { authenticate, authorize } = require('../middleware/auth');
 
 // Get menu
@@ -125,6 +126,24 @@ router.post('/', authenticate, async (req, res) => {
     await order.save();
     await order.populate('bookingId items.menuItemId');
 
+    // Create transaction record
+    const transaction = new Transaction({
+      userId: req.user.userId,
+      bookingId,
+      orderId: order._id,
+      type: 'room_service',
+      description: `Room service - ${orderItems.length} item(s)`,
+      amount: totalAmount,
+      status: 'completed',
+      paymentMethod: 'card',
+      details: {
+        items: orderItems.map(i => ({ name: i.name, qty: i.qty, price: i.price })),
+        deliveryLocation: deliveryLocation || 'Room'
+      }
+    });
+
+    await transaction.save();
+
     res.status(201).json(order);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -188,4 +207,3 @@ router.patch('/menu/:id', authenticate, authorize(['admin', 'chef']), async (req
 });
 
 module.exports = router;
-
