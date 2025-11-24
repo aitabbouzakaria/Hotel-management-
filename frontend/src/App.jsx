@@ -1,5 +1,6 @@
 import React, { useState, createContext, useContext, useEffect } from 'react';
 import { Calendar, Hotel, User, ShoppingCart, LogOut, Menu as MenuIcon, X, Search, Clock, Check, AlertCircle } from 'lucide-react';
+import TransactionHistory from './pages/TransactionHistory';
 
 // Auth Context
 const AuthContext = createContext();
@@ -778,6 +779,7 @@ const App = () => {
                 <Search className="w-5 h-5 mr-1" />
                 Search
               </button>
+
               <button
                 onClick={() => setCurrentPage('bookings')}
                 className={`flex items-center ${currentPage === 'bookings' ? 'text-blue-600' : 'text-gray-600'} hover:text-blue-600`}
@@ -785,6 +787,7 @@ const App = () => {
                 <Calendar className="w-5 h-5 mr-1" />
                 My Bookings
               </button>
+
               <button
                 onClick={() => setCurrentPage('service')}
                 className={`flex items-center ${currentPage === 'service' ? 'text-blue-600' : 'text-gray-600'} hover:text-blue-600`}
@@ -792,6 +795,16 @@ const App = () => {
                 <ShoppingCart className="w-5 h-5 mr-1" />
                 Room Service
               </button>
+
+              {/* NEW: Transactions button */}
+              <button
+                onClick={() => setCurrentPage('transactions')}
+                className={`flex items-center ${currentPage === 'transactions' ? 'text-blue-600' : 'text-gray-600'} hover:text-blue-600`}
+              >
+                <Clock className="w-5 h-5 mr-1" />
+                Transactions
+              </button>
+              
               <div className="flex items-center text-gray-700">
                 <User className="w-5 h-5 mr-1" />
                 {user.name}
@@ -841,6 +854,18 @@ const App = () => {
               >
                 Room Service
               </button>
+
+              {/* NEW: mobile Transactions */}
+              <button
+                onClick={() => {
+                  setCurrentPage('transactions');
+                  setMobileMenuOpen(false);
+                }}
+                className="block w-full text-left px-4 py-2 hover:bg-gray-100"
+              >
+                Transactions
+              </button>
+
               <button
                 onClick={() => {
                   logout();
@@ -894,12 +919,15 @@ const App = () => {
         {currentPage === 'bookings' && <MyBookings />}
         
         {currentPage === 'service' && <RoomService />}
+
+        {/* NEW: Transactions page */}
+        {currentPage === 'transactions' && <TransactionHistory />}
       </main>
 
       <footer className="bg-gray-800 text-white mt-12 py-6">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p>&copy; 2024 Hotel Manager. All rights reserved.</p>
-          <p className="text-sm text-gray-400 mt-2">Built with React & Node.js</p>
+          
         </div>
       </footer>
     </div>
