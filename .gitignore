@@ -39,5 +39,8 @@ coverage/
 .temp/
 *.tmp
 
+# ignore environment files
+.env
+backend/.env
 
 
