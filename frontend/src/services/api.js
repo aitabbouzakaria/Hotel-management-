@@ -1,4 +1,10 @@
-export const API_URL = 'http://localhost:5000/api';
+const API_URL = "http://localhost:5000/api"; // adapte si besoin
+
+export async function fetchRooms() {
+  const res = await fetch(`${API_URL}/rooms/types`);
+  if (!res.ok) throw new Error("Erreur lors du chargement des chambres");
+  return res.json();
+}
 
 const request = async (endpoint, options = {}) => {
   const token = localStorage.getItem('token');

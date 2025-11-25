@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { AuthProvider, useAuth } from './context/AuthContext';
+import { fetchRooms } from './services/api';
 import api from './services/api';
 import AuthForm from './components/AuthForm';
 import RoomSearch from './components/RoomSearch';
@@ -20,6 +21,22 @@ const App = () => {
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [searchData, setSearchData] = useState(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchRooms()
+      .then((rooms) => {
+        setAvailableRooms(rooms);
+        console.log('Rooms fetched from API:', rooms);
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
+  useEffect(() => {
+    if (currentPage === 'search') {
+      console.log('Available rooms to display:', availableRooms);
+    }
+  }, [currentPage, availableRooms]);
 
   const handleSearch = async (data) => {
     try {
@@ -178,18 +195,23 @@ const App = () => {
               />
             ) : (
               <>
-                <RoomSearch onSearch={handleSearch} />
+                <RoomSearch onSearch={handleSearch} rooms={availableRooms} />
                 
-                {availableRooms.length > 0 && (
-                  <div>
-                    <h2 className="text-2xl font-bold mb-6">Available Rooms</h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {availableRooms.map((room, idx) => (
-                        <RoomCard key={idx} room={room} onBook={handleBook} />
-                      ))}
+                {loading ? (
+                  <div>Chargement...</div>
+                ) : (
+                  availableRooms.length > 0 && (
+                    <div>
+                      <h2 className="text-2xl font-bold mb-6">Available Rooms</h2>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {availableRooms.map((room, idx) => (
+                          <RoomCard key={idx} room={room} onBook={handleBook} />
+                        ))}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )
+                )
+                }
                 
                 {searchData && availableRooms.length === 0 && (
                   <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded flex items-center">

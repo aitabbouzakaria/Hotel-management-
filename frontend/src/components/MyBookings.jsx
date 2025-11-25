@@ -3,6 +3,9 @@ import React from 'react';
 export default function MyBookings() {
   // placeholder — replace with real fetch logic
   const bookings = [];
+  console.log('MyBookings rendered');
+  // Log the bookings array
+  console.log('Current bookings:', bookings);
   return (
     <div className="bg-white p-6 rounded shadow">
       <h2 className="text-xl font-semibold mb-4">My Bookings</h2>
