@@ -19,6 +19,15 @@ export async function fetchTransactions() {
   return res.json();
 }
 
+export async function fetchMyBookings() {
+  const token = localStorage.getItem('token');
+  const res = await fetch('http://localhost:5000/api/bookings', {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!res.ok) throw new Error('Erreur lors du chargement des bookings');
+  return res.json();
+}
+
 const request = async (endpoint, options = {}) => {
   const token = localStorage.getItem('token');
   const headers = {
