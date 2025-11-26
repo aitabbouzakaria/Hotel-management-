@@ -6,6 +6,19 @@ export async function fetchRooms() {
   return res.json();
 }
 
+export async function fetchTransactions() {
+  const token = localStorage.getItem('token');
+  console.log('Token utilisé pour fetchTransactions:', token);
+  const res = await fetch('http://localhost:5000/api/transactions', {
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    }
+  });
+  if (!res.ok) throw new Error('Erreur lors du chargement des transactions');
+  return res.json();
+}
+
 const request = async (endpoint, options = {}) => {
   const token = localStorage.getItem('token');
   const headers = {

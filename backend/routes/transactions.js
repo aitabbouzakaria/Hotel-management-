@@ -25,7 +25,12 @@ router.get('/', authenticate, async (req, res) => {
     const transactions = await Transaction.find(query)
       .populate('bookingId orderId')
       .sort({ createdAt: -1 });
-    
+
+    // Log les transactions récupérées
+    console.log('Transactions trouvées pour user', req.user.userId, transactions);
+    console.log('User:', req.user);
+    console.log('Query:', query);
+
     // Calculate summary
     const summary = {
       total: transactions.reduce((sum, t) => sum + t.amount, 0),

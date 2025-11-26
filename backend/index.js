@@ -30,6 +30,8 @@ app.use('/api/orders', require('./routes/orders'));
 app.use('/api/rooms', require('./routes/rooms'));
 app.use('/api/housekeeping', require('./routes/housekeeping'));
 app.use('/api/reports', require('./routes/reports'));
+const transactionsRoutes = require('./routes/transactions');
+app.use('/api/transactions', transactionsRoutes);
 
 // Health check
 app.get('/health', (req, res) => {
