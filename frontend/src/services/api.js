@@ -28,6 +28,31 @@ export async function fetchMyBookings() {
   return res.json();
 }
 
+// Récupérer les room services de l'utilisateur connecté
+export async function fetchRoomServices() {
+  const token = localStorage.getItem('token');
+  const res = await fetch('http://localhost:5000/api/room-services', {
+    headers: { Authorization: `Bearer ${token}` }
+  });
+  if (!res.ok) throw new Error('Erreur lors du chargement des room services');
+  return res.json();
+}
+
+// Créer une demande de room service
+export async function createRoomService(data) {
+  const token = localStorage.getItem('token');
+  const res = await fetch('http://localhost:5000/api/room-services', {
+    method: 'POST',
+    headers: { 
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  });
+  if (!res.ok) throw new Error('Erreur lors de la création du room service');
+  return res.json();
+}
+
 const request = async (endpoint, options = {}) => {
   const token = localStorage.getItem('token');
   const headers = {
